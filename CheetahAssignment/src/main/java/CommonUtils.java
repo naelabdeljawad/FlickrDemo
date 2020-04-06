@@ -6,18 +6,17 @@ import java.util.Random;
 
 public class CommonUtils {
 
-    private static CommonUtils commonUtils;
-
     /**
-     * Singleton
+     * Sleep
      *
-     * @return
+     * @param millisecs
      */
-    public static synchronized CommonUtils getInstance() {
-        if (commonUtils == null)
-            return new CommonUtils();
-
-        return commonUtils;
+    public static void sleep(int millisecs) {
+        try {
+            Thread.sleep(millisecs);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -25,7 +24,7 @@ public class CommonUtils {
      *
      * @return
      */
-    public String getCurrentTimeDate() {
+    public static String getCurrentTimeDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         return dateFormat.format(cal.getTime());
@@ -38,7 +37,7 @@ public class CommonUtils {
      * @param max
      * @return
      */
-    public int getRandomNumber(int min, int max) {
+    public static int getRandomNumber(int min, int max) {
         Random random = new Random();
         int randomNum = random.nextInt((max - min) + 1) + min;
         return randomNum;
@@ -50,7 +49,7 @@ public class CommonUtils {
      * @param len
      * @return
      */
-    public String getRandomString(int len) {
+    public static String getRandomString(int len) {
         String AB = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         SecureRandom rnd = new SecureRandom();

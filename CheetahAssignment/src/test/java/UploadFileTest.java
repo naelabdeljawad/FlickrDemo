@@ -1,6 +1,9 @@
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.people.User;
-import com.flickr4java.flickr.photos.*;
+import com.flickr4java.flickr.photos.Photo;
+import com.flickr4java.flickr.photos.Photocount;
+import com.flickr4java.flickr.photos.PhotosInterface;
+import com.flickr4java.flickr.photos.SearchParameters;
 import com.flickr4java.flickr.tags.Tag;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -9,7 +12,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,7 +49,7 @@ public class UploadFileTest {
     }
 
     @Test
-    public void photoUploadTest() throws InterruptedException {
+    public void photoUploadTest() {
         Log.info("*** Photo upload test started ***");
 
         previousPhotosCount = getCountOfPhotos();
@@ -57,41 +59,9 @@ public class UploadFileTest {
         assertNotNull(photoID, "Photo ID is null!");
 
         // Wait for photo to be refreshed on website
-        Thread.sleep(15000);
+        CommonUtils.sleep(1500);
 
         Log.info("*** Photo upload test passed ***");
-    }
-
-    @Test(dependsOnMethods = "photoUploadTest")
-    public void uploadedPhotoSearchTest() {
-        Log.info("*** Photo search test started ***");
-
-        boolean isPhotoFound = false;
-        AtomicBoolean isEqual = new AtomicBoolean(false);
-        String photoTitle = propsReader.getProperty("jpgfile").split("\\.")[0];
-
-        try {
-            SearchParameters params = new SearchParameters();
-            params.setMedia("all"); // One of "photos", "videos" or "all"
-            params.setExtras(Stream.of("media").collect(Collectors.toSet()));
-            params.setText(photoTitle);
-            params.setUserId(propsReader.getProperty("userid"));
-
-            PhotoList<Photo> results = photos.search(params, 50, 0);
-
-            for (Photo p : results) {
-                Log.info("Searching photo ".concat(p.getId()));
-                if (p.getId().equals(photoID)) {
-                    assertTrue(p.getTitle().contains(photoTitle));
-                    isPhotoFound = true;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        assertTrue(isPhotoFound);
-
-        Log.info("*** Photo search test passed ***");
     }
 
 
@@ -165,6 +135,37 @@ public class UploadFileTest {
         }
 
         Log.info("*** Photo info test passed ***");
+    }
+
+    @Test(dependsOnMethods = "photoUploadTest")
+    public void uploadedPhotoSearchTest() {
+        Log.info("*** Photo search test started ***");
+
+        boolean isPhotoFound = false;
+        String photoTitle = propsReader.getProperty("jpgfile").split("\\.")[0];
+
+        try {
+            SearchParameters params = new SearchParameters();
+            params.setMedia("all"); // One of "photos", "videos" or "all"
+            params.setExtras(Stream.of("media").collect(Collectors.toSet()));
+            params.setText(photoTitle);
+            params.setUserId(propsReader.getProperty("userid"));
+            CommonUtils.sleep(25000);
+            // PhotoList<Photo> results = photos.search(params, 50, 0);
+
+            for (Photo p : flickr.getPhotosInterface().search(params, 50, 0)) {
+                Log.info("Searching photo ".concat(p.getId()));
+                if (p.getId().equals(photoID)) {
+                    assertTrue(p.getTitle().contains(photoTitle));
+                    isPhotoFound = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertTrue(isPhotoFound);
+
+        Log.info("*** Photo search test passed ***");
     }
 
     private int getCountOfPhotos() {

@@ -1,7 +1,6 @@
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.uploader.UploadMetaData;
 import com.flickr4java.flickr.uploader.Uploader;
-import com.flickr4java.flickr.uploader.UploaderResponse;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class FlickrUploaderUtils {
                 return null;
             }
             if (filename.lastIndexOf(File.separatorChar) > 0)
-                basefilename = filename.substring(filename.lastIndexOf(File.separatorChar) + 1, filename.length());
+                basefilename = filename.substring(filename.lastIndexOf(File.separatorChar) + 1);
             else
                 basefilename = filename;
 
@@ -53,8 +52,6 @@ public class FlickrUploaderUtils {
         List<String> tags = new ArrayList<>();
 
         UploadMetaData metaData = new UploadMetaData();
-        UploaderResponse response = new UploaderResponse();
-
         metaData.setFamilyFlag(true);
         metaData.setDescription("minions for cheetah task");//TODO  Hardcoded for the task only, must be changed.
 

@@ -12,10 +12,10 @@ import java.util.Map;
 
 public class WebDriverCreator {
 
-    private static DesiredCapabilities webCapabilities;
-    private static EventFiringWebDriver listenerDriver;
-    private static WebEventListener eventListener;
-    private static ChromeDriverService service;
+    private DesiredCapabilities webCapabilities;
+    private EventFiringWebDriver listenerDriver;
+    private WebEventListener eventListener;
+    private ChromeDriverService service;
 
     private ChromeOptions getChromeCapabilities() {
         /**
